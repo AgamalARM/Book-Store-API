@@ -1,0 +1,22 @@
+{
+  "name": "book-store-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AgamalARM/Book-Store-API.git"
+  },
+  "author": "Ahmed Gamal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AgamalARM/Book-Store-API/issues"
+  },
+  "homepage": "https://github.com/AgamalARM/Book-Store-API#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
