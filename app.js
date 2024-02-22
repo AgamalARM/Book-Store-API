@@ -15,14 +15,21 @@ const books = [
 ];
 
 // HTTP Methods/Verbs
-app.get("/", (req,res) => {
-    res.send("Welcome To ALLAH");
-
-});
 app.get("/api/books", (req,res) => {
-    res.json(books);
+    res.status(200).json(books);
 
 });
+
+app.get("/api/books/:id", (req,res) => {
+    const book = books.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
+    if(book){
+        res.status(200).json(book);
+    }else{
+        res.status(404).json({ message: "Book Not Found" });
+    }
+
+});
+
 
 //Running The server
 const PORT = 5000;
