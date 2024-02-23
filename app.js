@@ -3,6 +3,9 @@ const express = require('express');
 //init app
 const app = express();
 
+//Middelware
+app.use(express.json()); //because express can read json from req.body
+
 const books = [
     {
         id:1,
@@ -29,6 +32,15 @@ app.get("/api/books/:id", (req,res) => {
     }
 
 });
+app.post("/api/books", (req,res) => {
+    console.log(req.body);
+    book = {
+        id: books.length + 1,
+        title: req.body.title
+    }
+    books.push(book);
+    res.status(201).json(book); // 201 post is created Successfully
+})
 
 
 //Running The server
