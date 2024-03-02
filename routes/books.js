@@ -1,0 +1,53 @@
+const express = require('express');
+const Joi = require('joi'); // for validation
+const router = express.Router();
+
+const books = [
+    {
+        id:1,
+        title:"The greatest ISLAM",
+        price: 13
+    },
+    {
+        id:2,
+        title:"The greatest MOHAMMED",
+        price: 17
+    }
+];
+
+// HTTP Methods/Verbs
+router.get("/", (req,res) => {
+    res.status(200).json(books);
+
+});
+
+router.get("/:id", (req,res) => {
+    const book = books.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
+    if(book){
+        res.status(200).json(book);
+    }else{
+        res.status(404).json({ message: "Book Not Found" });
+    }
+
+});
+router.post("/", (req,res) => {
+    // validation of input user using Joi
+    const schema = Joi.object({
+        title: Joi.string().trim().min(3).max(200).required(),
+        price: Joi.number().min(0).required()
+    })
+    const { error } = schema.validate(req.body);
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message}); // 400 =>Bad Request
+    }
+    console.log(req.body);
+    book = {
+        id: books.length + 1,
+        title: req.body.title,
+        price: req.body.price
+    }
+    books.push(book);
+    res.status(201).json(book); // 201 post is created Successfully
+});
+
+module.exports = router;
