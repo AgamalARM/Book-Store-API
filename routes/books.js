@@ -27,6 +27,13 @@ router.get("/", (req,res) => {
 
 });
 
+/**
+ * @desc Get book by id
+ * @route /api/books/:id
+ * @method GET
+ * @access public
+ */
+
 router.get("/:id", (req,res) => {
     const book = books.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
     if(book){
@@ -36,6 +43,13 @@ router.get("/:id", (req,res) => {
     }
 
 });
+
+/**
+ * @desc Create a new book
+ * @route /api/books
+ * @method POST
+ * @access public
+ */
 router.post("/", (req,res) => {
     // validation of input user using Joi
     const schema = Joi.object({
