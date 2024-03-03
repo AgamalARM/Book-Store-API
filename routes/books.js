@@ -16,6 +16,12 @@ const books = [
 ];
 
 // HTTP Methods/Verbs
+/**
+ * @desc Get all books
+ * @route /api/books
+ * @method GET
+ * @access public
+ */
 router.get("/", (req,res) => {
     res.status(200).json(books);
 
