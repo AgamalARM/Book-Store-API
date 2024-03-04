@@ -52,11 +52,7 @@ router.get("/:id", (req,res) => {
  */
 router.post("/", (req,res) => {
     // validation of input user using Joi
-    const schema = Joi.object({
-        title: Joi.string().trim().min(3).max(200).required(),
-        price: Joi.number().min(0).required()
-    })
-    const { error } = schema.validate(req.body);
+    const { error } = validateCreateBook(req.body);
     if (error) {
         return res.status(400).json({ message: error.details[0].message}); // 400 =>Bad Request
     }
@@ -69,5 +65,14 @@ router.post("/", (req,res) => {
     books.push(book);
     res.status(201).json(book); // 201 post is created Successfully
 });
+
+function validateCreateBook(obj) {
+    const schema = Joi.object({
+        title: Joi.string().trim().min(3).max(200).required(),
+        price: Joi.number().min(0).required()
+    })
+    return schema.validate(obj);
+    
+}
 
 module.exports = router;
