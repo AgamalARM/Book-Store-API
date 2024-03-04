@@ -66,10 +66,59 @@ router.post("/", (req,res) => {
     res.status(201).json(book); // 201 post is created Successfully
 });
 
+/**
+ * @desc Update a book
+ * @route /api/books/:id
+ * @method PUT
+ * @access public
+ */
+router.put("/:id", (req,res) => {
+    // validation of input user using Joi
+    const { error } = validateUpdateBook(req.body);
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message}); // 400 =>Bad Request
+    }
+
+    const book = books.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
+    if(book){
+        res.status(200).json({ message: "Book has been updated" });
+    }else{
+        res.status(404).json({ message: "Book Not Found" });
+    }
+
+})
+
+/**
+ * @desc Delete a book
+ * @route /api/books/:id
+ * @method DELETE
+ * @access public
+ */
+ router.delete("/:id", (req,res) => {
+    const book = books.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
+    if(book){
+        res.status(200).json({ message: "Book has been deleted" });
+    }else{
+        res.status(404).json({ message: "Book Not Found" });
+    }
+
+})
+
+// function to validate create a book
 function validateCreateBook(obj) {
     const schema = Joi.object({
         title: Joi.string().trim().min(3).max(200).required(),
         price: Joi.number().min(0).required()
+    })
+    return schema.validate(obj);
+    
+}
+
+// function to validate update a book
+function validateUpdateBook(obj) {
+    const schema = Joi.object({
+        title: Joi.string().trim().min(3).max(200),
+        price: Joi.number().min(0)
     })
     return schema.validate(obj);
     
