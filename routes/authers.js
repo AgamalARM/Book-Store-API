@@ -109,8 +109,8 @@ router.post("/", (req,res) => {
         return res.status(400).json({ message: error.details[0].message}); // 400 =>Bad Request
     }
 
-    const book = books.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
-    if(book){
+    const auther = authers.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
+    if(auther){
         res.status(200).json({ message: "Auther has been updated" });
     }else{
         res.status(404).json({ message: "Auther Not Found" });
