@@ -1,5 +1,6 @@
 const express = require('express');
 const bookPath = require("./routes/books");
+const autherPath = require("./routes/authers")
 
 //init app
 const app = express();
@@ -9,6 +10,7 @@ app.use(express.json()); //because express can read json from req.body
 
 //Routes
 app.use("/api/books", bookPath);
+app.use("/api/authers", autherPath);
 
 
 
