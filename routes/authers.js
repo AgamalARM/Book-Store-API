@@ -39,6 +39,40 @@ router.get("/:id", (req,res) => {
     }
 })
 
+/**
+ * @desc Create a new auther
+ * @route /api/books
+ * @method POST
+ * @access public
+ */
+router.post("/", (req,res) => {
+    // validation of input user using Joi
+    const { error } = validateCreateAuther(req.body);
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message}); // 400 =>Bad Request
+    }
+    console.log(req.body);
+    auther = {
+        id: authers.length + 1,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName
+    }
+    authers.push(auther);
+    res.status(201).json(auther); // 201 post is created Successfully
+});
+
+
+// function to validate create an auther
+function validateCreateauther(obj) {
+    const schema = Joi.object({
+        firstName: Joi.string().trim().min(3).max(200).required(),
+        lastName:  Joi.string().trim().min(3).max(200).required()
+    })
+    return schema.validate(obj);
+    
+}
+
+
 
 
 module.exports = router;
