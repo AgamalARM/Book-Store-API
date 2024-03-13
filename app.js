@@ -1,12 +1,19 @@
 const express = require('express');
 const bookPath = require("./routes/books");
 const autherPath = require("./routes/authers")
+const morgan = require("morgan");
+const dbConnect = require('./config/dbConnect');
+
+
+// db connection
+dbConnect();
 
 //init app
 const app = express();
 
 //Apply Middleware
-app.use(express.json()); //because express can read json from req.body
+app.use(express.json()); //to parsing req.body,because express can read json from req.body
+app.use(morgan("dev"));  // morgan middelware for logger
 
 //Routes
 app.use("/api/books", bookPath);
