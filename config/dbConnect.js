@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 //  mongodb+srv://user13:1234@cluster0.mxsmfkw.mongodb.net/alexstore?retryWrites=true&w=majority
 const dbConnect = () => {
   mongoose
-  .connect('mongodb+srv://user13:1234@cluster0.mxsmfkw.mongodb.net/bookStore?retryWrites=true&w=majority&appName=Cluster0')
+  .connect('mongodb+srv://user13:1234@cluster0.mxsmfkw.mongodb.net/bookStoreDB?retryWrites=true&w=majority&appName=Cluster0')
   .then((conn) => {
     console.log(`Database is connected : ${conn.connection.host}`);
   })

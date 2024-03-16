@@ -1,17 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Joi = require('joi');
-
-const authers = [{
-    id: 1,
-    firstName: "ahmed",
-    lastName: "gamal"
-},
-{
-    id: 2,
-    firstName: "reham",
-    lastName: "gamal"
-}]
+const { Author } = require('../models/Author');
 
 /**
  * @desc Get all authers
@@ -19,8 +9,16 @@ const authers = [{
  * @method GET
  * @access public
  */
-router.get("/", (req,res) => {
-    res.status(200).json(authers);
+router.get("/", async(req,res) => {
+    try {
+        const authorsList = await Author.find().sort({ firstName: -1}).select( "firstName lastName" );
+        res.status(200).json(authorsList);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Someting is wrong"});
+        
+    }
+    
 })
 
 /**
@@ -45,56 +43,30 @@ router.get("/:id", (req,res) => {
  * @method POST
  * @access public
  */
-router.post("/", (req,res) => {
+router.post("/", async(req,res) => {
     // validation of input user using Joi
     const { error } = validateCreateAuther(req.body);
     if (error) {
         return res.status(400).json({ message: error.details[0].message}); // 400 =>Bad Request
     }
     console.log(req.body);
-    auther = {
-        id: authers.length + 1,
+  try {
+    const author = new Author({
         firstName: req.body.firstName,
-        lastName: req.body.lastName
-    }
-    authers.push(auther);
-    res.status(201).json(auther); // 201 post is created Successfully
+        lastName: req.body.lastName,
+        nationality: req.body.nationality,
+        image: req.body.image
+    }); 
+    
+    const result = await author.save();
+    res.status(201).json(result); // 201 post is created Successfully
+  } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Some thing is wrong"});
+  }
 });
 
-
-// function to validate create an auther
-function validateCreateauther(obj) {
-    const schema = Joi.object({
-        firstName: Joi.string().trim().min(3).max(200).required(),
-        lastName:  Joi.string().trim().min(3).max(200).required()
-    })
-    return schema.validate(obj);
     
-}
-
-
-/**
- * @desc post a new auther
- * @route /api/authers
- * @method POST
- * @access public
- */
-router.post("/", (req,res) => {
-    //validate input
-    const { error } = validateCreateAuther(req.body);
-    if(error) {
-        return res.status(400).json({ message: error.details[0].message});
-    }
-    
-    console.log(req.body);
-    auther = {
-        id: authers.length +1,
-        firstName: req.body.firstName,
-        lastName:  req.body.lastName
-    }
-    authers.push(auther);
-    res.status(201).json(auther);
-})
 
 /**
  * @desc Update an auther by id
@@ -139,7 +111,8 @@ router.post("/", (req,res) => {
 function validateCreateAuther(obj) {
     const schema = Joi.object({
         firstName: Joi.string().trim().min(3).max(200).required(),
-        lastName:  Joi.string().trim().min(3).max(200).required()
+        lastName:  Joi.string().trim().min(3).max(200).required(),
+        nationality:  Joi.string().trim().min(3).max(100).required()
     })
     return schema.validate(obj);
     
