@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
-
+//  mongodb+srv://<username>:<password>@cluster0.mxsmfkw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+//  mongodb+srv://user13:1234@cluster0.mxsmfkw.mongodb.net/alexstore?retryWrites=true&w=majority
 const dbConnect = () => {
-  mongoose.connect('mongodb+srv://user13:1234@cluster0.mxsmfkw.mongodb.net/alexstore?retryWrites=true&w=majority')
+  mongoose
+  .connect('mongodb+srv://user13:1234@cluster0.mxsmfkw.mongodb.net/bookStore?retryWrites=true&w=majority&appName=Cluster0')
   .then((conn) => {
-    console.log(`Database connected : ${conn.connection.host}`);
+    console.log(`Database is connected : ${conn.connection.host}`);
   })
   .catch((err) => {
     console.error(`Database Error : ${err}`);

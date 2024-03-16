@@ -23,4 +23,4 @@ app.use("/api/authers", autherPath);
 
 //Running The server
 const PORT = 5000;
-app.listen(PORT, () => console.log(`The Server is running on port ${PORT}`))
+app.listen(PORT, () => console.log(`The Server is running on port ${PORT}`));
