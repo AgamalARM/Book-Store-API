@@ -5,7 +5,7 @@ const { Author } = require('../models/Author');
 
 /**
  * @desc Get all authers
- * @route /api/authers
+ * @route /api/authors
  * @method GET
  * @access public
  */
@@ -23,7 +23,7 @@ router.get("/", async(req,res) => {
 
 /**
  * @desc Get auther by id
- * @route /api/authers/:id
+ * @route /api/authors/:id
  * @method GET
  * @access public
  */
@@ -39,7 +39,7 @@ router.get("/:id", (req,res) => {
 
 /**
  * @desc Create a new auther
- * @route /api/books
+ * @route /api/authors
  * @method POST
  * @access public
  */
@@ -69,8 +69,8 @@ router.post("/", async(req,res) => {
     
 
 /**
- * @desc Update an auther by id
- * @route /api/authers/:id
+ * @desc Update an author by id
+ * @route /api/authors/:id
  * @method PUT
  * @access public
  */
@@ -92,7 +92,7 @@ router.post("/", async(req,res) => {
 
 /**
  * @desc Delete an auther by id
- * @route /api/authers/:id
+ * @route /api/authors/:id
  * @method DELETE
  * @access public
  */
@@ -107,7 +107,7 @@ router.post("/", async(req,res) => {
 })
 
 
-// function to validate create a book
+// function to validate create a Author
 function validateCreateAuther(obj) {
     const schema = Joi.object({
         firstName: Joi.string().trim().min(3).max(200).required(),

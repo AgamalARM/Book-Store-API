@@ -17,7 +17,7 @@ app.use(morgan("dev"));  // morgan middelware for logger
 
 //Routes
 app.use("/api/books", bookPath);
-app.use("/api/authers", autherPath);
+app.use("/api/authors", autherPath);
 
 
 
