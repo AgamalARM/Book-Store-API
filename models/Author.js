@@ -47,7 +47,8 @@ function validateCreateAuther(obj) {
 function validateUpdateAuther(obj) {
     const schema = Joi.object({
         firstName: Joi.string().trim().min(3).max(200),
-        lastName:  Joi.string().trim().min(3).max(200)
+        lastName:  Joi.string().trim().min(3).max(200),
+        nationality:  Joi.string().trim().min(3).max(100)
     })
     return schema.validate(obj);
     
