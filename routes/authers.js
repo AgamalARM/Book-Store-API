@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Joi = require('joi');
-const { Author } = require('../models/Author');
+const { Author, validateCreateAuther, validateUpdateAuther  } = require('../models/Author');
 
 /**
  * @desc Get all authers
@@ -27,13 +26,18 @@ router.get("/", async(req,res) => {
  * @method GET
  * @access public
  */
-router.get("/:id", (req,res) => {
-    const auther = authers.find(a => a.id === parseInt(req.params.id))
+router.get("/:id", async(req,res) => {
+    try {
+    const auther = await Author.findById(req.params.id)
     if(auther){
-        console.log(auther);
         res.status(200).json(auther);
     }else{
         res.status(404).json( { message: "Author is not found"})
+    }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Someting is wrong"});
+        
     }
 })
 
@@ -74,20 +78,29 @@ router.post("/", async(req,res) => {
  * @method PUT
  * @access public
  */
- router.put("/:id", (req,res) => {
+ router.put("/:id", async(req,res) => {
     // validation of input user using Joi
     const { error } = validateUpdateAuther(req.body);
     if (error) {
         return res.status(400).json({ message: error.details[0].message}); // 400 =>Bad Request
     }
-
-    const auther = authers.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
-    if(auther){
-        res.status(200).json({ message: "Auther has been updated" });
-    }else{
-        res.status(404).json({ message: "Auther Not Found" });
+    try {
+        const author = await Author.findByIdAndUpdate(req.params.id,{
+            $set: {
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                nationality: req.body.nationality,
+                image: req.body.image
+    
+            }
+        }, { new: true});
+        res.status(200).json(author);
+    
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Some thing is wrong"});
+        
     }
-
 })
 
 /**
@@ -96,36 +109,23 @@ router.post("/", async(req,res) => {
  * @method DELETE
  * @access public
  */
- router.delete("/:id", (req,res) => {
-    const auther = authers.find(a => a.id === parseInt(req.params.id)); // to convert req.params.id to integer
-    if(auther){
-        res.status(200).json({ message: "Auther has been deleted" });
-    }else{
-        res.status(404).json({ message: "Auther Not Found" });
+ router.delete("/:id", async(req,res) => {
+    try {
+        const author = await Author.findById(req.params.id);
+    if (author) {
+        await Author.findByIdAndDelete(req.params.id);
+        res.status(200).json({ message: " Author has been Deleted"});;
+        
+    } else {
+
+        res.status(404).json({ message: " Author Not found"})
+    }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Some thing is wrong"});
     }
 
 })
-
-
-// function to validate create a Author
-function validateCreateAuther(obj) {
-    const schema = Joi.object({
-        firstName: Joi.string().trim().min(3).max(200).required(),
-        lastName:  Joi.string().trim().min(3).max(200).required(),
-        nationality:  Joi.string().trim().min(3).max(100).required()
-    })
-    return schema.validate(obj);
-    
-}
-
-function validateUpdateAuther(obj) {
-    const schema = Joi.object({
-        firstName: Joi.string().trim().min(3).max(200),
-        lastName:  Joi.string().trim().min(3).max(200)
-    })
-    return schema.validate(obj);
-    
-}
 
 
 module.exports = router;
