@@ -1,19 +1,8 @@
 const express = require('express');
-const Joi = require('joi'); // for validation
 const router = express.Router();
+const asyncHandler = require('express-async-handler');
+const { Book, validateCreateBook, validateUpdateBook} = require("../models/Book");
 
-const books = [
-    {
-        id:1,
-        title:"The greatest ISLAM",
-        price: 13
-    },
-    {
-        id:2,
-        title:"The greatest MOHAMMED",
-        price: 17
-    }
-];
 
 // HTTP Methods/Verbs
 /**
@@ -22,10 +11,13 @@ const books = [
  * @method GET
  * @access public
  */
-router.get("/", (req,res) => {
-    res.status(200).json(books);
+router.get("/", asyncHandler(async(req,res) => {
 
-});
+        const bookList = await Book.find();
+        res.status(200).json(bookList);
+        
+
+}));
 
 /**
  * @desc Get book by id
@@ -34,15 +26,15 @@ router.get("/", (req,res) => {
  * @access public
  */
 
-router.get("/:id", (req,res) => {
-    const book = books.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
+router.get("/:id", asyncHandler(async(req,res) => {
+    const book = await Book.findById(req.params.id)
     if(book){
         res.status(200).json(book);
     }else{
         res.status(404).json({ message: "Book Not Found" });
     }
 
-});
+}));
 
 /**
  * @desc Create a new book
@@ -50,21 +42,23 @@ router.get("/:id", (req,res) => {
  * @method POST
  * @access public
  */
-router.post("/", (req,res) => {
+router.post("/", asyncHandler(async(req,res) => {
     // validation of input user using Joi
     const { error } = validateCreateBook(req.body);
     if (error) {
         return res.status(400).json({ message: error.details[0].message}); // 400 =>Bad Request
     }
     console.log(req.body);
-    book = {
-        id: books.length + 1,
+    const book = new Book({
         title: req.body.title,
-        price: req.body.price
-    }
-    books.push(book);
-    res.status(201).json(book); // 201 post is created Successfully
-});
+        author: req.body.author,
+        description: req.body.description,
+        price: req.body.price,
+        cover: req.body.cover
+    });
+    const result = await book.save();
+    res.status(201).json(result); // 201 post is created Successfully
+}));
 
 /**
  * @desc Update a book
@@ -72,56 +66,40 @@ router.post("/", (req,res) => {
  * @method PUT
  * @access public
  */
-router.put("/:id", (req,res) => {
+router.put("/:id", asyncHandler(async(req,res) => {
     // validation of input user using Joi
     const { error } = validateUpdateBook(req.body);
     if (error) {
         return res.status(400).json({ message: error.details[0].message}); // 400 =>Bad Request
     }
 
-    const book = books.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
-    if(book){
-        res.status(200).json({ message: "Book has been updated" });
-    }else{
-        res.status(404).json({ message: "Book Not Found" });
-    }
+    const updatedBook = await Book.findByIdAndUpdate(req.params.id,{
+        $set: {
+            title: req.body.title,
+            author: req.body.author,
+            description: req.body.description,
+            price: req.body.price,
+            cover: req.body.cover
+        }
+    }, {new: true}) ;
+    res.status(200).json(updatedBook);
+}));
 
-})
-
-/**
- * @desc Delete a book
+/** 
+ * @desc Delete a book by id
  * @route /api/books/:id
  * @method DELETE
  * @access public
  */
- router.delete("/:id", (req,res) => {
-    const book = books.find(b => b.id === parseInt(req.params.id)); // to convert req.params.id to integer
+ router.delete("/:id", asyncHandler(async(req,res) => {
+    const book = await Book.findById(req.params.id);
     if(book){
+        await Book.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: "Book has been deleted" });
     }else{
         res.status(404).json({ message: "Book Not Found" });
     }
 
-})
-
-// function to validate create a book
-function validateCreateBook(obj) {
-    const schema = Joi.object({
-        title: Joi.string().trim().min(3).max(200).required(),
-        price: Joi.number().min(0).required()
-    })
-    return schema.validate(obj);
-    
-}
-
-// function to validate update a book
-function validateUpdateBook(obj) {
-    const schema = Joi.object({
-        title: Joi.string().trim().min(3).max(200),
-        price: Joi.number().min(0)
-    })
-    return schema.validate(obj);
-    
-}
+}))
 
 module.exports = router;

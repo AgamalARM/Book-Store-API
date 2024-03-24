@@ -1,6 +1,6 @@
 const express = require('express');
 const bookPath = require("./routes/books");
-const autherPath = require("./routes/authers")
+const authorPath = require("./routes/authors")
 const morgan = require("morgan");
 const dbConnect = require('./config/dbConnect');
 
@@ -17,7 +17,7 @@ app.use(morgan("dev"));  // morgan middelware for logger
 
 //Routes
 app.use("/api/books", bookPath);
-app.use("/api/authors", autherPath);
+app.use("/api/authors", authorPath);
 
 
 
