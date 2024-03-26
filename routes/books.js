@@ -13,7 +13,7 @@ const { Book, validateCreateBook, validateUpdateBook} = require("../models/Book"
  */
 router.get("/", asyncHandler(async(req,res) => {
 
-        const bookList = await Book.find();
+        const bookList = await Book.find().populate("author",["firstName","_id"]);// to get more info about author collection
         res.status(200).json(bookList);
         
 
@@ -27,7 +27,7 @@ router.get("/", asyncHandler(async(req,res) => {
  */
 
 router.get("/:id", asyncHandler(async(req,res) => {
-    const book = await Book.findById(req.params.id)
+    const book = await Book.findById(req.params.id).populate("author")
     if(book){
         res.status(200).json(book);
     }else{

@@ -3,6 +3,8 @@ const bookPath = require("./routes/books");
 const authorPath = require("./routes/authors")
 const morgan = require("morgan");
 const dbConnect = require('./config/dbConnect');
+const dotenv = require('dotenv');
+dotenv.config();
 
 
 // db connection
@@ -22,5 +24,5 @@ app.use("/api/authors", authorPath);
 
 
 //Running The server
-const PORT = 5000;
-app.listen(PORT, () => console.log(`The Server is running on port ${PORT}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`The Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`));
