@@ -6,6 +6,7 @@ const dbConnect = require('./config/dbConnect');
 const dotenv = require('dotenv');
 dotenv.config();
 const logger = require('./middlewares/logger');
+const { notFound, errorHandler } = require('./middlewares/errors');
 
 
 // db connection
@@ -23,6 +24,10 @@ app.use(logger);  //custom middleware I make it
 app.use("/api/books", bookPath);
 app.use("/api/authors", authorPath);
 
+// NOT Found Middleware
+app.use(notFound);
+// Error Handler Middleware
+app.use(errorHandler);
 
 
 //Running The server
