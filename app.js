@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const dbConnect = require('./config/dbConnect');
 const dotenv = require('dotenv');
 dotenv.config();
+const logger = require('./middlewares/logger');
 
 
 // db connection
@@ -16,6 +17,7 @@ const app = express();
 //Apply Middleware
 app.use(express.json()); //to parsing req.body,because express can read json from req.body
 app.use(morgan("dev"));  // morgan middelware for logger
+app.use(logger);  //custom middleware I make it
 
 //Routes
 app.use("/api/books", bookPath);
