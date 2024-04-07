@@ -1,6 +1,7 @@
 const express = require('express');
 const bookPath = require("./routes/books");
 const authorPath = require("./routes/authors")
+const authPath = require('./routes/auth');
 const morgan = require("morgan");
 const dbConnect = require('./config/dbConnect');
 const dotenv = require('dotenv');
@@ -23,6 +24,7 @@ app.use(logger);  //custom middleware I make it
 //Routes
 app.use("/api/books", bookPath);
 app.use("/api/authors", authorPath);
+app.use("/api/auth",authPath);
 
 // NOT Found Middleware
 app.use(notFound);
